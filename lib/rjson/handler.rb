@@ -49,7 +49,6 @@ module RJSON
     # Recover an invalid parse tree by dropping items that we're not certain are
     # fully recoverable
     def recover!
-      binding.pry
       current_context = stack.last
       _type, *rest = current_context
 
