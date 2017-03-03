@@ -112,6 +112,14 @@ module RJSON
       end
     end
 
+    def test_invalid_but_not_trucated_json_raises_exception
+      skip "until our parser can reject invalid but not truncated JSON"
+      parser = new_parser '{"foo":}'
+      assert_raises(Racc::ParseError) do
+        parser.parse.result
+      end
+    end
+
     def new_parser string
       tokenizer = Tokenizer.new StringIO.new string
       Parser.new tokenizer
