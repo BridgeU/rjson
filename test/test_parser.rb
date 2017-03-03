@@ -47,6 +47,61 @@ module RJSON
         'object',
         '{"foo":{"bar":null}}',
         '{"foo":{"bar":null}}'
+      ],
+      [
+        'truncated_object',
+        '{"foo":true,"bar":fals',
+        '{"foo":true}'
+      ],
+      [
+        'truncated_first_value_in_object',
+        '{"foo":tru',
+        '{}'
+      ],
+      [
+        'truncated_number_in_object',
+        '{"foo":13.5,"bar":1',
+        '{"foo":13.5}'
+      ],
+      [
+        'does_not_touch_uncorrupted_number_in_object',
+        '{"foo":13.5,"bar":1}',
+        '{"foo":13.5,"bar":1}'
+      ],
+      [
+        'corrupted_value_in_nested_object',
+        '{"foo":13.5,"bar":{"baz":fals',
+        '{"foo":13.5,"bar":{}}'
+      ],
+      [
+        'corrupted_object_key',
+        '{"foo":true,"ba',
+        '{"foo":true}'
+      ],
+      [
+        'corrupted_object_ends_with_complete_key',
+        '{"foo":true,"bar"',
+        '{"foo":true}'
+      ],
+      [
+        'corrupted_object_ends_with_colon',
+        '{"foo":true,"bar":',
+        '{"foo":true}'
+      ],
+      [
+        'corrupted_object_ends_with_comma',
+        '{"foo":true,',
+        '{"foo":true}'
+      ],
+      [
+        'corrupted_object_ends_with_opening_curly',
+        '{"foo":{',
+        '{"foo":{}}'
+      ],
+      [
+        'corrupted_object_ends_with_decimal_point',
+        '{"foo":true,"foo_fraction":0.',
+        '{"foo":true}'
       ]
     ].each do |test_case|
       define_method("test_#{test_case.first}") do
