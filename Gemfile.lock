@@ -1,0 +1,43 @@
+PATH
+  remote: .
+  specs:
+    bridgeu-rjson (0.0.1)
+      racc
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    byebug (9.0.6)
+    coderay (1.1.1)
+    hoe (3.16.0)
+      rake (>= 0.8, < 13.0)
+    hoe-gemspec (1.0.0)
+      hoe (>= 2.2.0)
+    hoe-git (1.6.0)
+    method_source (0.8.2)
+    minitest (5.10.1)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
+    racc (1.4.14)
+    rake (10.5.0)
+    slop (3.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bridgeu-rjson!
+  hoe
+  hoe-gemspec
+  hoe-git
+  minitest
+  pry-byebug
+  rake (~> 10.0)
+
+BUNDLED WITH
+   1.14.5
