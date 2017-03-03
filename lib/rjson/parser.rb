@@ -11,7 +11,6 @@ module RJSON
 module_eval(<<'...end parser.y/module_eval...', 'parser.y', 54)
 
   require 'rjson/handler'
-  require 'pry'
 
   attr_reader :handler
 
