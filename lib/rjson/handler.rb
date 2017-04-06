@@ -30,7 +30,8 @@ module RJSON
 
     def result
       root = @stack.first.last
-      process root.first, root.drop(1)
+      output = process root.first, root.drop(1)
+      output[:_truncated] = true if @truncated
     end
 
     def process type, rest
@@ -49,6 +50,8 @@ module RJSON
     # Recover an invalid parse tree by dropping items that we're not certain are
     # fully recoverable
     def recover!
+      @truncated = true
+
       current_context = stack.last
       _type, *rest = current_context
 
