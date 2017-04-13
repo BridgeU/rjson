@@ -1,9 +1,11 @@
 module RJSON
   class Handler
     attr_reader :stack
+    attr_accessor :truncated
 
     def initialize
       @stack = [[:root]]
+      @truncated = false
     end
 
     def start_object
@@ -31,7 +33,16 @@ module RJSON
     def result
       root = @stack.first.last
       output = process root.first, root.drop(1)
-      output[:_truncated] = true if @truncated
+      if @truncated
+        if output.is_a? Hash
+          output["_truncated"] = true 
+        elsif output.is_a? Array
+          output.push "_truncated"
+        else
+          throw "JSON doc is a single, truncated scalar"
+        end
+      end
+      output
     end
 
     def process type, rest
