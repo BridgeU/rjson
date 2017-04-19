@@ -2,20 +2,122 @@ require 'minitest/autorun'
 require 'rjson/parser'
 require 'rjson/tokenizer'
 require 'rjson/stream_tokenizer'
+require 'json'
 require 'stringio'
 
 module RJSON
   class TestParser < MiniTest::Unit::TestCase
     def test_array
-      parser = new_parser '["foo",null,true]'
-      r = parser.parse.result
-      assert_equal(['foo', nil, true], r)
+      assert_parses_as('["foo",null,true]',
+                       '["foo",null,true]')
+    end
+
+    def test_truncated_array
+      assert_parses_as('["foo"]',
+                       '["foo",nul')
+    end
+
+    def test_truncated_number_in_array
+      assert_parses_as('["foo"]',
+                       '["foo",1')
+    end
+
+    def test_truncated_array_ends_with_comma
+      assert_parses_as('["foo"]',
+                       '["foo",')
+    end
+
+    def test_truncated_array_ends_with_opening_square_bracket
+      assert_parses_as('["foo",[]]',
+                       '["foo",[')
+    end
+
+    def test_does_not_touch_untruncated_number_in_array
+      assert_parses_as('["foo",1]',
+                       '["foo",1]')
+    end
+
+    def test_truncated_value_in_nested_array
+      assert_parses_as('["foo",[10.3,["bar"]]]',
+                       '["foo",[10.3,["bar",fals')
     end
 
     def test_object
-      parser = new_parser '{"foo":{"bar":null}}'
-      r = parser.parse.result
-      assert_equal({ 'foo' => { 'bar' => nil }}, r)
+      assert_parses_as('{"foo":{"bar":null}}',
+                       '{"foo":{"bar":null}}')
+    end
+
+    def test_truncated_object
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,"bar":fals')
+    end
+
+    def test_truncated_first_value_in_object
+      assert_parses_as('{}',
+                       '{"foo":tru')
+    end
+
+    def test_truncated_number_in_object
+      assert_parses_as('{"foo":13.5}',
+                       '{"foo":13.5,"bar":1')
+    end
+
+    def test_does_not_touch_untruncated_number_in_object
+      assert_parses_as('{"foo":13.5,"bar":1}',
+                       '{"foo":13.5,"bar":1}')
+    end
+
+    def test_truncated_value_in_nested_object
+      assert_parses_as('{"foo":13.5,"bar":{}}',
+                       '{"foo":13.5,"bar":{"baz":fals')
+    end
+
+    def test_truncated_object_key
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,"ba')
+    end
+
+    def test_truncated_object_ends_with_complete_key
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,"bar"')
+    end
+
+    def test_truncated_object_ends_with_colon
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,"bar":')
+    end
+
+    def test_truncated_object_ends_with_comma
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,')
+    end
+
+    def test_truncated_object_ends_with_opening_curly
+      assert_parses_as('{"foo":{}}',
+                       '{"foo":{')
+    end
+
+    def test_truncated_object_ends_with_decimal_point
+      assert_parses_as('{"foo":true}',
+                       '{"foo":true,"foo_fraction":0.')
+    end
+
+    def test_invalid_but_not_trucated_json_raises_exception
+      skip "until our parser can reject invalid but not truncated JSON"
+      parser = new_parser '{"foo":}'
+      assert_raises(Racc::ParseError) do
+        parser.parse.result
+      end
+    end
+
+    private
+
+    def assert_parses_as(expected, actual)
+      parser = new_parser actual
+      assert_equal(
+        expected, parser.parse.result.to_json,
+        "Expected #{actual.inspect} to parse as #{expected.inspect}"
+      )
     end
 
     def new_parser string
