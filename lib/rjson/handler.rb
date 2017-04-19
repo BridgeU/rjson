@@ -38,8 +38,6 @@ module RJSON
           output["_truncated"] = true 
         elsif output.is_a? Array
           output.push "_truncated"
-        else
-          throw "JSON doc is a single, truncated scalar"
         end
       end
       output
