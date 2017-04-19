@@ -59,6 +59,9 @@ module RJSON
     # Recover an invalid parse tree by dropping items that we're not certain are
     # fully recoverable
     def recover!
+      # The `_truncated` flag is currently added to _all_ JSON docs that
+      # have parsing errors, whatever the cause.
+      # TODO: Only add this flag when parse-errors are caused by truncation
       @truncated = true
 
       current_context = stack.last
