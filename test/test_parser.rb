@@ -13,22 +13,22 @@ module RJSON
     end
 
     def test_truncated_array
-      assert_parses_as('["foo"]',
+      assert_parses_as('["foo","_truncated"]',
                        '["foo",nul')
     end
 
     def test_truncated_number_in_array
-      assert_parses_as('["foo"]',
+      assert_parses_as('["foo","_truncated"]',
                        '["foo",1')
     end
 
     def test_truncated_array_ends_with_comma
-      assert_parses_as('["foo"]',
+      assert_parses_as('["foo","_truncated"]',
                        '["foo",')
     end
 
     def test_truncated_array_ends_with_opening_square_bracket
-      assert_parses_as('["foo",[]]',
+      assert_parses_as('["foo",[],"_truncated"]',
                        '["foo",[')
     end
 
@@ -38,7 +38,7 @@ module RJSON
     end
 
     def test_truncated_value_in_nested_array
-      assert_parses_as('["foo",[10.3,["bar"]]]',
+      assert_parses_as('["foo",[10.3,["bar"]],"_truncated"]',
                        '["foo",[10.3,["bar",fals')
     end
 
@@ -48,17 +48,17 @@ module RJSON
     end
 
     def test_truncated_object
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,"bar":fals')
     end
 
     def test_truncated_first_value_in_object
-      assert_parses_as('{}',
+      assert_parses_as('{"_truncated":true}',
                        '{"foo":tru')
     end
 
     def test_truncated_number_in_object
-      assert_parses_as('{"foo":13.5}',
+      assert_parses_as('{"foo":13.5,"_truncated":true}',
                        '{"foo":13.5,"bar":1')
     end
 
@@ -68,37 +68,37 @@ module RJSON
     end
 
     def test_truncated_value_in_nested_object
-      assert_parses_as('{"foo":13.5,"bar":{}}',
+      assert_parses_as('{"foo":13.5,"bar":{},"_truncated":true}',
                        '{"foo":13.5,"bar":{"baz":fals')
     end
 
     def test_truncated_object_key
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,"ba')
     end
 
     def test_truncated_object_ends_with_complete_key
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,"bar"')
     end
 
     def test_truncated_object_ends_with_colon
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,"bar":')
     end
 
     def test_truncated_object_ends_with_comma
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,')
     end
 
     def test_truncated_object_ends_with_opening_curly
-      assert_parses_as('{"foo":{}}',
+      assert_parses_as('{"foo":{},"_truncated":true}',
                        '{"foo":{')
     end
 
     def test_truncated_object_ends_with_decimal_point
-      assert_parses_as('{"foo":true}',
+      assert_parses_as('{"foo":true,"_truncated":true}',
                        '{"foo":true,"foo_fraction":0.')
     end
 

@@ -1,9 +1,11 @@
 module RJSON
   class Handler
     attr_reader :stack
+    attr_accessor :truncated
 
     def initialize
       @stack = [[:root]]
+      @truncated = false
     end
 
     def start_object
@@ -30,7 +32,15 @@ module RJSON
 
     def result
       root = @stack.first.last
-      process root.first, root.drop(1)
+      output = process root.first, root.drop(1)
+      if @truncated
+        if output.is_a? Hash
+          output["_truncated"] = true 
+        elsif output.is_a? Array
+          output.push "_truncated"
+        end
+      end
+      output
     end
 
     def process type, rest
@@ -49,6 +59,11 @@ module RJSON
     # Recover an invalid parse tree by dropping items that we're not certain are
     # fully recoverable
     def recover!
+      # The `_truncated` flag is currently added to _all_ JSON docs that
+      # have parsing errors, whatever the cause.
+      # TODO: Only add this flag when parse-errors are caused by truncation
+      @truncated = true
+
       current_context = stack.last
       _type, *rest = current_context
 
