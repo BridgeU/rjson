@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "bridgeu-rjson"
-  s.version  = "0.0.1"
+  s.version  = "0.0.2"
   s.licenses = ['MIT']
   s.summary  = "BridgeU Racc powered JSON parser"
   s.author   = "Sam Jewell"
